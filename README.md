@@ -3,39 +3,24 @@
 ## Project Overview
 TalentScout is an AI-powered recruitment screening assistant designed to automate the initial technical interview process. It engages candidates in a structured conversation, identifies their technical strengths, and generates tailored screening questions using an LLM. The goal is to save recruiter time while providing a fair, consistent, and engaging experience for candidates.
 
+## LLM Selection Justification
+We selected **meta-llama/Llama-3.1-8B-Instruct** for this implementation because:
+1.  **Instruction Following**: As a state-of-the-art open-source model, it excels at following complex multi-step instructions (e.g., "Screen for these 3 techs, generate 3 questions each").
+2.  **Reasoning Capabilities**: Llama 3.1 demonstrates superior reasoning for technical topics compared to smaller models, ensuring high-quality, relevant questions.
+3.  **Conversational Fluency**: It handles the nuances of recruitment dialogue naturally, providing a smoother candidate experience.
+4.  **Open Standard**: Widely supported and easier to fine-tune or swap if needed.
+
 ## Features
 *   **Structured Information Collection**: Validates candidate details (Email, Phone, Experience).
-*   **Dynamic Tech Stack Analysis**: Identifies programming languages and tools, asking follow-up questions if the input is vague.
-*   **AI-Generated Screening Questions**: Uses **meta-llama/Llama-3.1-8B-Instruct** to generate specific technical questions based on the candidate's exact stack and experience level.
+*   **Dynamic Tech Stack Analysis**:
+    *   **Intelligent Expansion**: Automatically prompts for frameworks or databases if the initial input is too vague (e.g., just "Python").
+    *   **Per-Technology Breakdowns**: Generates questions for each specific technology listed.
+*   **AI-Generated Screening Questions**: Uses **Llama-3.1-8B** to generate tailored questions, capped at 6 questions to respect candidate time.
 *   **Adaptive Conversations**:
-    *   **Sentiment Awareness**: Detects candidate confidence/uncertainty and responds with encouragement.
-    *   **Contextual Personalization**: Tailors language based on years of experience (e.g., focusing on "fundamentals" vs "architecture").
-    *   **Fallback Handling**: Detects incomplete answers and asks for elaboration.
-*   **Premium UI**: A sleek, dark-mode interface built with Streamlit and custom CSS.
-
-## Tech Stack
-*   **Frontend**: Streamlit (Python)
-*   **AI/LLM**: Hugging Face Inference API
-*   **Model**: `meta-llama/Llama-3.1-8B-Instruct`
-*   **Logic**: Python (RegEx validation, TextBlob for sentiment)
-*   **Styling**: Custom CSS (Glassmorphism, Inter font)
-
-## Architecture
-1.  **User Interface**: Streamlit manages the chat session and state.
-2.  **Screener Logic**: A helper class handles:
-    *   Input validation (RegEx)
-    *   State transitions (Greeting -> Info -> Stack -> Questions)
-    *   Sentiment analysis (TextBlob)
-3.  **LLM Service**: Connects to Hugging Face via API.
-    *   **Input**: Tech stack + Experience + Prompt
-    *   **Output**: Structured list of 3-5 technical questions.
-
-## LLM Selection Justification
-We selected **Mistral-7B-Instruct-v0.3** for this implementation because:
-1.  **Instruction Following**: It excels at following strict formatting rules (e.g., "Return ONLY a numbered list"), which is critical for parsing questions.
-2.  **Determinism**: By setting `temperature=0.1` and `seed=42`, this model produces consistent, reproducible questions, ensuring fairness across candidates.
-3.  **Efficiency**: It provides a perfect balance of reasoning capability and latency for a real-time chat application.
-4.  **Open Source**: Allows for transparency and potential future self-hosting.
+    *   **Sentiment Awareness**: Detects confidence levels and provides encouraging feedback.
+    *   **Contextual Personalization**: Explicitly adjusts question difficulty based on years of experience.
+    *   **Robust Fallback**: Detects one-word or insufficient answers and politely asks the candidate to elaborate.
+*   **Premium UI**: A sleek, dark-mode interface built with Streamlit and custom CSS, featuring auto-scrolling chat.
 
 ## Prompt Design Strategy
 *   **Role-Playing**: The system prompt defines the AI as a "Technical Recruiter" to set the correct tone and domain.
